@@ -12,8 +12,6 @@ import org.jsoup.select.Elements;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.parser.MovieParser;
 import rs.fon.is.movies.persistence.DataModelManager;
-import rs.fon.is.movies.sparql.MovieCategories;
-import rs.fon.is.movies.sparql.MovieCategoriesQuery;
 
 public class Main {
 
@@ -21,7 +19,7 @@ public class Main {
 
 	public static void main(String[] args) throws URISyntaxException {
 
-	for (int i = 1; i < 10; i++) {
+    for (int i = 1; i < 10; i++) {
 			Document doc = null;
 			try {
 				doc = Jsoup.parse(new URL(
@@ -49,6 +47,8 @@ public class Main {
 
 		}
 		DataModelManager.getInstance().closeDataModel();
+	
+	//	MovieCategories.getMovieCategories("Stuck in Love", 2013);
 	}
 	
 	private static void collectLinks(Document doc) throws URISyntaxException {

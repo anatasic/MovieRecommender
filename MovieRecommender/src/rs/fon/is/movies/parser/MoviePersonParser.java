@@ -3,10 +3,7 @@ package rs.fon.is.movies.parser;
 import java.net.URI;
 import java.util.HashMap;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import rs.fon.is.movies.domain.Person;
 import rs.fon.is.movies.util.URIGenerator;

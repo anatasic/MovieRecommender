@@ -6,15 +6,18 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import rs.fon.is.movies.domain.AggregateRating;
+import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.domain.Organization;
 import rs.fon.is.movies.domain.Person;
@@ -97,7 +100,10 @@ public class MovieParser {
 					movie.setProductionCompany(organization);
 				} 
 				movie.setUri(URIGenerator.generateURI(movie));
-				Collection<String> categories = MovieCategories.getMovieCategories(movie.getName());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(movie.getDatePublished());
+				int yearPublished = cal.get(Calendar.YEAR);
+				Collection<Category> categories = MovieCategories.getMovieCategories(movie.getName(), yearPublished);
 				movie.setCategories(categories);
 			}
 

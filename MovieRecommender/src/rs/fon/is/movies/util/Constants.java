@@ -4,5 +4,6 @@ public class Constants {
 
 	public static final String SCHEMA = "http://schema.org/";
 	public static final String NS = "http://is.fon.rs/movie/";
+	public static final String SKOS = "http://www.w3.org/2009/08/skos-reference/skos.html#";
 	
 }

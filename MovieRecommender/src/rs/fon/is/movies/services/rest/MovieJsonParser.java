@@ -1,10 +1,10 @@
 package rs.fon.is.movies.services.rest;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 
 import rs.fon.is.movies.domain.AggregateRating;
+import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.domain.Person;
 
@@ -52,8 +52,8 @@ public class MovieJsonParser {
 		}
 		JsonArray categories = new JsonArray();
 		if (movie.getCategories() != null){
-			for (String category : movie.getCategories()){
-				categories.add(new JsonPrimitive(category));
+			for (Category category : movie.getCategories()){
+				categories.add(new JsonPrimitive(category.getLabel()));
 			}
 			movieJson.add("categories", categories);
 		}

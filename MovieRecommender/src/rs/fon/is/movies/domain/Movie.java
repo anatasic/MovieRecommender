@@ -41,7 +41,7 @@ public class Movie extends Thing {
 	private Collection<Person> actors;
 	
 	@RdfProperty(Constants.SCHEMA + "categories")
-	private Collection<String> categories;
+	private Collection<Category> categories;
 
 	@RdfProperty(Constants.SCHEMA + "director")
 	private Person director;
@@ -66,7 +66,7 @@ public class Movie extends Thing {
 	public Movie() {
 		actors = new ArrayList <Person>();
 		genres = new ArrayList<String>();
-		categories = new ArrayList<String>();
+		categories = new ArrayList<Category>();
 	}
 
 	public String getName() {
@@ -161,11 +161,11 @@ public class Movie extends Thing {
 		this.actors.add(p);
 	}
 
-	public Collection<String> getCategories() {
+	public Collection<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(Collection<String> categories) {
+	public void setCategories(Collection<Category> categories) {
 		this.categories = categories;
 	}
 	
