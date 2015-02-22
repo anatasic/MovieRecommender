@@ -3,12 +3,15 @@ package rs.fon.is.movies.services.rest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.codehaus.jettison.json.JSONArray;
+
 import rs.fon.is.movies.domain.AggregateRating;
 import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.domain.Person;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -32,8 +35,13 @@ public class MovieJsonParser {
 
 		}
 
-		if (movie.getDirector() != null) {
-			movieJson.add("director", serializePerson(movie.getDirector()));
+		if (movie.getDirectors() != null) {
+			JsonArray directors = new JsonArray();
+			for (Person p : movie.getDirectors()) {
+				JsonObject personJson = serializePerson(p);
+				directors.add(personJson);
+			}
+			movieJson.add("directors", directors);
 		}
 		if (movie.getActors() != null) {
 			JsonArray actors = new JsonArray();
@@ -53,14 +61,14 @@ public class MovieJsonParser {
 		JsonArray categories = new JsonArray();
 		if (movie.getCategories() != null){
 			for (Category category : movie.getCategories()){
-				categories.add(new JsonPrimitive(category.getLabel()));
-			}
+				categories.add(serializeCategory(category));
+			}			
 			movieJson.add("categories", categories);
 		}
 
-		if (movie.getAwards() != null) {
+	/*	if (movie.getAwards() != null) {
 			movieJson.addProperty("awards", movie.getAwards());
-		}
+		}*/
 		if (movie.getAggregateRating() != null) {
 			JsonObject aggRating = serializeAggRating(movie
 					.getAggregateRating());
@@ -96,6 +104,19 @@ public class MovieJsonParser {
 		personJson.addProperty("name", person.getName());
 		personJson.addProperty("url", person.getURL().toString());
 		return personJson;
+	}
+	
+	public static JsonObject serializeCategory(Category category){
+		JsonObject categoryJson = new JsonObject();
+		categoryJson.addProperty("prefLabel", category.getLabel());
+		JsonArray broaderCategories = new JsonArray();
+		for (String broader : category.getBroader()){
+			JsonPrimitive broaderCat = new JsonPrimitive(broader);
+			broaderCategories.add(broaderCat);
+		}
+		
+		categoryJson.add("broader", broaderCategories);
+		return categoryJson;
 	}
 
 }

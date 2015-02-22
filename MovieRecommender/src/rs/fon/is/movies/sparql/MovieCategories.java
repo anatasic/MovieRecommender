@@ -1,30 +1,44 @@
 package rs.fon.is.movies.sparql;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-
-import javax.swing.border.TitledBorder;
-
-
+import java.util.List;
 
 import rs.fon.is.movies.domain.Category;
+import rs.fon.is.movies.domain.Person;
+import rs.fon.is.movies.util.URIGenerator;
+import thewebsemantic.Sparql;
 
 import com.hp.hpl.jena.query.ParameterizedSparqlString;
+import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
 
 public class MovieCategories{
 
 	
 	
-	public static Collection<Category> getMovieCategories(String title, int datePublished) {
+	public static ArrayList<Category> getMovieCategories(String title, Collection<Person> directors) {
+		ArrayList<Category> categories = new ArrayList<Category>();
+				for (Person p : directors) {
+				categories = findCategories(title, p);
+				if (categories.size() > 0){
+					return categories;
+				}
+			}
+		
+		return new ArrayList<Category>();
+		}
+
+	private static ArrayList<Category> findCategories(String title, Person director) {
 		ParameterizedSparqlString query = new ParameterizedSparqlString("" +
 				"prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>" +
 				"prefix category: <http://dbpedia.org/page/>"+
@@ -34,32 +48,71 @@ public class MovieCategories{
 				"prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>"+
 				"prefix dbpprop: <http://dbpedia.org/property/>"+
 				"prefix xsd: <http://www.w3.org/2001/XMLSchema#>"+
-				"prefix skos: <http://www.w3.org/2009/08/skos-reference/skos.html#>"+
-				"SELECT DISTINCT ?categoryName" + " WHERE {"
+				"prefix skos: <http://www.w3.org/2004/02/skos/core#>"+
+				"SELECT DISTINCT ?categoryName ?broader" + " WHERE {"
 						+ "?movie rdf:type db:Film ."						
 						+ "?movie dcterms:subject ?category." +
 						"?category rdfs:label ?categoryName."+
 						"?movie dbpprop:name ?title." +
-						"?movie db:releaseDate ?released."+
-						"FILTER((year(xsd:date(?released)) = "+datePublished+") && lang(?categoryName) = \"en\")."+
+						"?movie dbpprop:director ?director."+
+						"?director rdfs:label ?name."+
+						"FILTER(lang(?categoryName) = \"en\" )."+
 				"}");
+		
 		Model model = ModelFactory.createDefaultModel();
 		Literal titleLit = model.createLiteral(title, "en");
-	//	Literal titleLit = ResourceFactory.getInstance().createResource(title).
-		
+		Literal directorLit = model.createLiteral(director.getName(), "en");
+			
 		query.setParam("title", titleLit);
-		System.out.println(query);
+		query.setParam("name", directorLit);
+
 		QueryExecution exec = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query.asQuery() );
 		ResultSet results = exec.execSelect();
-		Collection<Category> categories = new LinkedList<Category>();
+		ArrayList<Category> categories = new ArrayList<Category>();
+	//	System.out.println(query);
 		while ( results.hasNext() ) {
-			String category = results.next().get("category").toString().replace("@en", "");
+			String category = results.next().get("categoryName").toString().replace("@en", "");
+			List<String> broader = getBroaderCategories(category);
 			Category cat = new Category();
 			cat.setLabel(category);
-			categories.add(cat);
+			cat.setBroader(broader);
+			URI categoryUri;
+			try {
+				categoryUri = URIGenerator.generateURI(cat);
+				cat.setUri(categoryUri);
+				categories.add(cat);
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
         }
 		
 		return categories;
-		}
+	}
 
+	private static List<String> getBroaderCategories(String category) {
+		// TODO Auto-generated method stub
+		String catName = "<http://dbpedia.org/resource/Category:"+category.replace(" ","_") +">";
+		String query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+				+ "prefix skos: <http://www.w3.org/2004/02/skos/core#>"
+				+ "select ?broader where { "
+				+ catName 
+				+ "skos:broader ?value."
+				+ "?value rdfs:label ?broader"
+				+ "}";
+		Query q = QueryFactory.create(query);
+		QueryExecution exec = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", q);
+		ResultSet results = exec.execSelect();
+		ArrayList<String> categories = new ArrayList<String>();
+		while ( results.hasNext() ) {
+			String value = results.next().get("broader").toString().replace("@en", "");
+			//System.out.println(value);
+			//Category broaderCat = new Category();
+			categories.add(value);			
+	}
+		
+		return categories;
+
+}
 }

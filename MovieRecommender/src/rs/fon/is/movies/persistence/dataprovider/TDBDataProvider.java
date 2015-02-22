@@ -6,7 +6,7 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 
 public class TDBDataProvider implements DataProvider {
 
-	private static final String directory = "C:/Users/tasica/Documents/tbd";
+	private static final String directory = "D:/tbd";
 	private Dataset dataset;
 
 	public TDBDataProvider() {

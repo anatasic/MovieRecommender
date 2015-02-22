@@ -25,9 +25,9 @@ public class Movie extends Thing {
 	@RdfProperty(Constants.SCHEMA + "datePublished")
 	private Date datePublished;
 	
-	@RdfProperty(Constants.SCHEMA + "awards")
+/*	@RdfProperty(Constants.SCHEMA + "awards")
 	private String awards;
-	
+	*/
 	@RdfProperty(Constants.SCHEMA + "contentRating")
 	private String contentRating;
 	
@@ -43,8 +43,8 @@ public class Movie extends Thing {
 	@RdfProperty(Constants.SCHEMA + "categories")
 	private Collection<Category> categories;
 
-	@RdfProperty(Constants.SCHEMA + "director")
-	private Person director;
+	@RdfProperty(Constants.SCHEMA + "directors")
+	private Collection<Person> directors;
 	
 	@RdfProperty(Constants.SCHEMA + "aggregateRating")
 	private AggregateRating aggregateRating;
@@ -93,13 +93,13 @@ public class Movie extends Thing {
 		this.datePublished = datePublished;
 	}
 
-	public String getAwards() {
+	/*public String getAwards() {
 		return awards;
 	}
 
 	public void setAwards(String awards) {
 		this.awards = awards;
-	}
+	}*/
 
 	public String getContentRating() {
 		return contentRating;
@@ -133,12 +133,12 @@ public class Movie extends Thing {
 		this.actors = actors;
 	}
 
-	public Person getDirector() {
-		return director;
+	public Collection<Person> getDirectors() {
+		return directors;
 	}
 
-	public void setDirector(Person director) {
-		this.director = director;
+	public void setDirectors(Collection<Person> directors) {
+		this.directors = directors;
 	}
 
 	public AggregateRating getAggregateRating() {

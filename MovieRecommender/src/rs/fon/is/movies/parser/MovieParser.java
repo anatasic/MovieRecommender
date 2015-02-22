@@ -64,11 +64,11 @@ public class MovieParser {
 					movie.setDatePublished(datePublished);
 				}
 
-				if (properties.select("[itemprop=awards]").size() != 0) {
+				/*if (properties.select("[itemprop=awards]").size() != 0) {
 					String awards = (properties.select("[itemprop=awards]"))
 							.attr("content");
 					movie.setAwards(awards);
-				} 
+				} */
 
 				if (properties.select("[itemprop=contentRating]").size() != 0) {
 					String contentRating = (properties
@@ -77,9 +77,9 @@ public class MovieParser {
 				} 
 
 				if (properties.select("[itemprop=director]").size() != 0) {
-					Person director = parseDirector(properties
-							.select("[itemprop=director]"));
-					movie.setDirector(director);
+					List<Person> directors = parseDirector(properties
+							.select("[itemprop=director]").select("a"));
+					movie.setDirectors(directors);
 				} 
 
 				if (properties.select("[itemprop=actors]").size() != 0) {
@@ -99,12 +99,11 @@ public class MovieParser {
 							.select("[itemprop=productionCompany]"));
 					movie.setProductionCompany(organization);
 				} 
-				movie.setUri(URIGenerator.generateURI(movie));
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(movie.getDatePublished());
-				int yearPublished = cal.get(Calendar.YEAR);
-				Collection<Category> categories = MovieCategories.getMovieCategories(movie.getName(), yearPublished);
+				List<Category> categories = MovieCategories.getMovieCategories(movie.getName(), movie.getDirectors());
 				movie.setCategories(categories);
+				movie.setUri(URIGenerator.generateURI(movie));
+				
+			
 			}
 
 		} catch (Exception e) {
@@ -134,13 +133,14 @@ public class MovieParser {
 
 	}
 
-	public static Person parseDirector(Elements elements)
+	public static List<Person> parseDirector(Elements elements)
 			throws MalformedURLException, URISyntaxException {
-		Person director = null;
+		List<Person> directors = new ArrayList<Person>();
 		for (Element e : elements) {
-			director = MoviePersonParser.parse(e);
+			Person director = MoviePersonParser.parse(e);
+			directors.add(director);
 		}
-		return director;
+		return directors;
 
 	}
 
@@ -191,14 +191,14 @@ public class MovieParser {
 		for (Element el : elements) {
 			if (!el.parents().hasAttr("itemprop")) {
 				for (Element child : el.children()) {
-					System.out.println(child.text());
+					//System.out.println(child.text());
 					if (child.select("span") != null){
 						
 						child.remove();
 					}
 				} 
 				String movieName = el.text();
-				System.out.println(movieName);
+			//	System.out.println(movieName);
 				return movieName;
 			}
 		}

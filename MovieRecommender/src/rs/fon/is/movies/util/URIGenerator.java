@@ -12,7 +12,7 @@ public class URIGenerator {
 	public static <T extends Thing> URI generateURI(T resource) throws URISyntaxException{
 		
 		String uri = Constants.NS + resource.getClass().getSimpleName()+ "/" + UUID.randomUUID();
-		System.out.println(uri);
+	//	System.out.println(uri);
 		return new URI(uri);
 	}
 

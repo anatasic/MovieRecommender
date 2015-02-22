@@ -1,4 +1,4 @@
-package rs.fon.is.movies.services;
+	package rs.fon.is.movies.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,8 +81,9 @@ public class MovieServiceImpl implements MovieService {
 		if (!categories.isEmpty()){
 			String[] movieCategories = categories.split(",");
 			for (int i = 0; i < movieCategories.length; i++) {
-				where += "?movie schema:categories ?categories" + "i"+". " +
-						"FILTER regex(?categories" + i + ",\""+movieCategories[i]
+				where += "?movie schema:categories ?categories" + "i"+
+			"schema:label ?label" + i + 
+			"FILTER regex(?label" + i + ",\""+movieCategories[i]
 								+"\")";
 			}
 		}

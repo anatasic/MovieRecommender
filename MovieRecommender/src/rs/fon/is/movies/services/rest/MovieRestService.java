@@ -33,7 +33,7 @@ public class MovieRestService {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getAllMovies(@DefaultValue("0") @QueryParam("offset") String offset, @DefaultValue("10") @QueryParam("limit") String limit, @DefaultValue("") @QueryParam("minReleaseYear") String minReleaseYear, @DefaultValue("") @QueryParam("maxReleaseYear") String maxReleaseYear, 
+	public String getAllMovies(@DefaultValue("0") @QueryParam("offset") String offset, @DefaultValue("100") @QueryParam("limit") String limit, @DefaultValue("") @QueryParam("minReleaseYear") String minReleaseYear, @DefaultValue("") @QueryParam("maxReleaseYear") String maxReleaseYear, 
 			@DefaultValue("") @QueryParam("actors") String actors, @DefaultValue("") @QueryParam("minRatingValue") String minRatingValue, @DefaultValue("") @QueryParam("maxRatingValue") String maxRatingValue, @DefaultValue("") @QueryParam("productionCompany") String productionCompany,
 			@DefaultValue("") @QueryParam("genres") String genres, @DefaultValue("") @QueryParam("directedBy") String directedBy, @DefaultValue("") @QueryParam("minReviewCount") String minReviewCount, @DefaultValue("") @QueryParam("hasAwards") String hasAwards, @DefaultValue("") @QueryParam("categories") String categories) throws URISyntaxException {
 		
