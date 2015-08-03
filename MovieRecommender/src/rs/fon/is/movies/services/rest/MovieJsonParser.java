@@ -110,8 +110,8 @@ public class MovieJsonParser {
 		JsonObject categoryJson = new JsonObject();
 		categoryJson.addProperty("prefLabel", category.getLabel());
 		JsonArray broaderCategories = new JsonArray();
-		for (String broader : category.getBroader()){
-			JsonPrimitive broaderCat = new JsonPrimitive(broader);
+		for (Category broader : category.getBroader()){
+			JsonPrimitive broaderCat = new JsonPrimitive(broader.getLabel());
 			broaderCategories.add(broaderCat);
 		}
 		

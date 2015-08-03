@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.domain.Person;
 import rs.fon.is.movies.parser.MovieParser;
@@ -32,19 +33,22 @@ public class Main {
 			collectLinks(doc);
 
 	//	}
-	//	for (String href : moviesLinks.keySet().iterator().next()) {
+		for (String href : moviesLinks.keySet()) {
 			try {
-				Movie movie = MovieParser.parse(moviesLinks.get(moviesLinks.keySet().iterator().next()));
+				Movie movie = MovieParser.parse(moviesLinks.get(href));
 				//Movie movie = MovieParser.parse(new URI("http://www.rottentomatoes.com/m/dr_strangelove/"));
 				if (movie != null) {
 					DataModelManager.getInstance().save(movie);
-					System.out.println(movie.toString());
-					/*if (movie.getCategories().size() == 0){
-						System.out.println(movie.getName() + " "+movie.getUri());
-						for (Person dir : movie.getDirectors()){
-							System.out.println(dir.getName());
+					System.out.println("movie: "+movie.getName());
+					for (Category cat : movie.getCategories()) {
+						System.out.println(cat.getLabel());
+						for (Category broaderCat : cat.getBroader()) {
+							System.out.println("broader: "+broaderCat.getLabel());
 						}
-					}*/
+						for (Category narrowerCat : cat.getNarrower()) {
+							System.out.println("narrower: "+narrowerCat.getLabel());
+						}
+					}
 					
 				}
 
@@ -53,7 +57,7 @@ public class Main {
 
 			}
 
-		//}
+		}
 		DataModelManager.getInstance().closeDataModel();
 	
 	//	MovieCategories.getMovieCategories("Stuck in Love", 2013);
