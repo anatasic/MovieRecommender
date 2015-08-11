@@ -1,8 +1,6 @@
 package rs.fon.is.movies.domain;
 
-import java.util.Collection;
 import java.util.List;
-
 import rs.fon.is.movies.util.Constants;
 import thewebsemantic.Namespace;
 import thewebsemantic.RdfProperty;

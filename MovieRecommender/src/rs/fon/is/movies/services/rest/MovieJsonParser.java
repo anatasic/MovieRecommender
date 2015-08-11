@@ -2,6 +2,7 @@ package rs.fon.is.movies.services.rest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.codehaus.jettison.json.JSONArray;
 
@@ -117,6 +118,13 @@ public class MovieJsonParser {
 		
 		categoryJson.add("broader", broaderCategories);
 		return categoryJson;
+	}
+	
+	public static JsonObject serializeSimilarMovies(String title, double coefficient){
+		JsonObject similarJson = new JsonObject();
+		similarJson.addProperty("title", title);
+		similarJson.addProperty("similar", coefficient);	
+		return similarJson;
 	}
 
 }

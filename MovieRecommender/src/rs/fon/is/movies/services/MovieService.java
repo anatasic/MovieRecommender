@@ -10,4 +10,6 @@ public interface MovieService {
 			String minRatingValue, String maxRatingValue, String productionCompany, String genres, String directedBy, String minReviewCounts, String hasAwards, String categories);
 	
 	public Movie getMovie(String uri);
+	
+	public Movie getSimilarMovies(String title, String director);
 }
