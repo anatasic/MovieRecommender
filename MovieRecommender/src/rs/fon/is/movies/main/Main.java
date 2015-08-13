@@ -42,7 +42,7 @@ public class Main {
 		// }
 		List<Movie> movies = new ArrayList<>();
 		for (String href : moviesLinks.keySet()) {
-			if (movies.size() < 10) {
+			if (movies.size() < 60) {
 				try {
 					Movie movie = MovieParser.parse(moviesLinks.get(href));					
 					if (movie.getCategories().size() != 0) {

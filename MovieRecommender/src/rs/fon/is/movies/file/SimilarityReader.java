@@ -1,6 +1,7 @@
 package rs.fon.is.movies.file;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,13 +12,9 @@ import java.util.List;
 public class SimilarityReader {
 
 	private static SimilarityReader INSTANCE;
-	private static HashMap<String, Double> similarMovies;
-	private static List<String> titles;
 
 	private SimilarityReader() {
-		// TODO Auto-generated constructor stub
-		similarMovies = new HashMap<>();
-		titles = new ArrayList<>();
+		
 	}
 
 	public static SimilarityReader getInstance() {
@@ -50,7 +47,7 @@ public class SimilarityReader {
 				}
 			}
 			br.close();
-			//HashMap<String, Double> similarMovies = new HashMap<>();
+			HashMap<String, Double> similarMovies = new HashMap<>();
 			for (String title : similarities.keySet()) {
 				String[] coeff = similarities.get(title);
 				similarMovies.put(title, Double.parseDouble(coeff[movieIndex - 1]));
@@ -63,10 +60,11 @@ public class SimilarityReader {
 
 	}
 
-	public List<String> readTitles() {
+	public List<String> readTitles(HashMap<String, Double> similarMovies) {
 		// TODO Auto-generated method stub
 
 		List<Double> values = new ArrayList<>(similarMovies.values());
+		List<String>titles = new ArrayList<>();
 		Collections.sort(values);
 		int count = 5;
 		for (int i = values.size()-1; i > 0; i--) {
@@ -81,5 +79,29 @@ public class SimilarityReader {
 		return titles;
 		
 	}
+	
+	public List<String> readAllTitles() {
+		// TODO Auto-generated method stub
 
+		BufferedReader br = null;
+
+			String sCurrentLine;
+			try {
+				br = new BufferedReader(new FileReader("D:/movierecommender/similarities.txt"));				
+				List<String> titles = new ArrayList<>();
+				while ((sCurrentLine = br.readLine()) != null) {
+					titles.add(sCurrentLine.substring(0, sCurrentLine.indexOf(':')));
+				}
+				br.close();
+				return titles;
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+			
+	}
 }

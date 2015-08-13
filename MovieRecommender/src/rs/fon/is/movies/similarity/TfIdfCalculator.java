@@ -59,7 +59,7 @@ public class TfIdfCalculator {
 				allCategories.addAll(m.getCategories());
 			} else {
 				for (Category c : m.getCategories()) {
-					if (!containsCategory(c, allCategories))
+					if (containsCategory(c, allCategories) == 0)
 						allCategories.add(c);
 				}
 			}
@@ -68,67 +68,73 @@ public class TfIdfCalculator {
 		return allCategories;
 	}
 
-	private static boolean containsCategory(Category cat, Collection<Category> listOfCat) {
+	private static double containsCategory(Category cat, Collection<Category> listOfCat) {
+		double i = 0;
 		for (Category c : listOfCat) {
-			if (c.getLabel().equalsIgnoreCase(cat.getLabel()))
-				return true;
+			if (c.getLabel().equalsIgnoreCase(cat.getLabel())) {
+				i++;
+			} else if (c.getBroader().contains(cat)) {
+				for (Category cc : c.getBroader()) {
+					if (cc.getLabel().equals(cat.getLabel())) {
+						i = i + 0.6;
+					}
+				}
+			} else {
+				for (Category broader : cat.getBroader()) {
+					if (broader.getLabel().equals(c.getLabel())) {
+						i = i + 0.4;
+					}
+				}
+			}
 		}
-		return false;
+		return i;
 	}
 
 	public static List<Double> calculateTfIdfMovie(Movie m, List<Movie> movies) {
 		Collection<Category> allCategories = getAllCategories(movies);
 		List<Double> tfidf = new ArrayList<Double>();
+		double frequency = 0.0;
 		for (Category cat : allCategories) {
-			// System.out.println(cat.getLabel());
-			if (containsCategory(cat, m.getCategories())) {
-				int a = calculateFrequencyForAllMovies(cat, movies);
-				tfidf.add(Math.log(movies.size() / a));
-//			} else {
-//				if (belongsToBroaderCategories(cat, m.getCategories())) {
-//					int a = calculateFrequencyForAllMovies(cat, movies);
-//					double value = 0.6 * (Math.log(movies.size() / a));
-//					tfidf.add(value);
-//					System.out.println("Broader: " + value);
-//				
-				} else {
-					tfidf.add(0.0);
+			frequency = containsCategory(cat, m.getCategories());
+			if (frequency != 0.0) {
+				double a = calculateFrequencyForAllMovies(cat, movies);
+				tfidf.add(frequency * (Math.log(movies.size() / a)));
 
-			//	}
+			}
+
+			else {
+				tfidf.add(0.0);
+
 			}
 		}
 		return tfidf;
 
 	}
 
-	private static boolean shareBroaderCategories(Category cat, Collection<Category> categories) {
-		for (Category c : categories) {
-			for (Category broaderCat : c.getBroader()) {
-				if (containsCategory(broaderCat, cat.getBroader())) {
-					return true;
+
+	private static double calculateFrequencyForAllMovies(Category cat, List<Movie> movies) {
+		// TODO Auto-generated method stub
+		double count = 0;
+		for (Movie m : movies) {
+			for (Category c : m.getCategories()) {
+				if (c.getLabel().equalsIgnoreCase(cat.getLabel())) {
+					count++;
+				} else if (c.getBroader().contains(cat)) {
+					for (Category cc : c.getBroader()) {
+						if (cc.getLabel().equals(cat.getLabel())) {
+							count = count + 0.6;
+						}
+					}
+				} else {
+					for (Category broader : cat.getBroader()) {
+						if (broader.getLabel().equals(c.getLabel())) {
+							count = count + 0.4;
+						}
+					}
 				}
 			}
 		}
-		return false;
-	}
 
-	private static boolean belongsToBroaderCategories(Category cat, Collection<Category> categories) {
-		for (Category c : categories) {
-			if (containsCategory(cat, c.getBroader())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static int calculateFrequencyForAllMovies(Category cat, List<Movie> movies) {
-		// TODO Auto-generated method stub
-		int count = 0;
-		for (Movie movie : movies) {
-			if (containsCategory(cat, movie.getCategories())) {
-				count++;
-			}
-		}
 		return count;
 	}
 
