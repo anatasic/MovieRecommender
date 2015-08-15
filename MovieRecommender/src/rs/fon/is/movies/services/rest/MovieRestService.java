@@ -86,6 +86,8 @@ public class MovieRestService {
 			}
 			
 			return similarArray.toString();
+		}else{
+			//Collection<Movie> movies = movieRepository.getMovies("0", "100", "","", "", "", "", "", "", "", "", "", "");
 		}
 
 		throw new WebApplicationException(Response.Status.NO_CONTENT);

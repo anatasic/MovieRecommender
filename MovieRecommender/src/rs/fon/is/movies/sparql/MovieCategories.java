@@ -4,13 +4,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Person;
 import rs.fon.is.movies.util.URIGenerator;
-import thewebsemantic.Sparql;
 
 import com.hp.hpl.jena.query.ParameterizedSparqlString;
 import com.hp.hpl.jena.query.Query;
@@ -21,7 +19,7 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
+
 
 public class MovieCategories {
 
@@ -65,11 +63,11 @@ public class MovieCategories {
 		while (results.hasNext()) {
 			String category = results.next().get("categoryName").toString().replace("@en", "");
 			List<Category> broader = getBroaderCategories(category);
-			List<Category> narrower = getNarrowerCategories(category);
+		//	List<Category> narrower = getNarrowerCategories(category);
 			Category cat = new Category();
 			cat.setLabel(category);
 			cat.setBroader(broader);
-			cat.setNarrower(narrower);
+//			cat.setNarrower(narrower);
 			URI categoryUri;
 			try {
 				categoryUri = URIGenerator.generateURI(cat);
@@ -116,37 +114,37 @@ public class MovieCategories {
 
 	}
 
-	private static List<Category> getNarrowerCategories(String category) {
-		String categoryUnderscore = category.replace(" ", "_");
-		String categorySearch = "<http://dbpedia.org/resource/Category:" + categoryUnderscore + ">";
-		String catURL = "http://dbpedia.org/resource/Category:";
-		String query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-				+ "prefix skos: <http://www.w3.org/2004/02/skos/core#>" + "select distinct ?narrower "
-				+ "where { ?narrower skos:broader " + categorySearch + "}";
-		// System.out.println(query);
-		Query q = QueryFactory.create(query);
-		QueryExecution exec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", q);
-		ResultSet results = exec.execSelect();
-		ArrayList<Category> categories = new ArrayList<Category>();
-		while (results.hasNext()) {
-			try {
-				RDFNode node = results.next().get("narrower");
-				String value = node.toString();
-				value = value.substring(catURL.length());
-				value = value.replace("_", " ");
-				Category narrowerCat = new Category();
-				narrowerCat.setLabel(value);
-				URI narrowerURI;
-				narrowerURI = URIGenerator.generateURI(narrowerCat);
-				narrowerCat.setUri(narrowerURI);
-				categories.add(narrowerCat);
-			} catch (URISyntaxException e) {
-				continue;
-			}
-
-		}
-
-		return categories;
-
-	}
+//	private static List<Category> getNarrowerCategories(String category) {
+//		String categoryUnderscore = category.replace(" ", "_");
+//		String categorySearch = "<http://dbpedia.org/resource/Category:" + categoryUnderscore + ">";
+//		String catURL = "http://dbpedia.org/resource/Category:";
+//		String query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+//				+ "prefix skos: <http://www.w3.org/2004/02/skos/core#>" + "select distinct ?narrower "
+//				+ "where { ?narrower skos:broader " + categorySearch + "}";
+//		// System.out.println(query);
+//		Query q = QueryFactory.create(query);
+//		QueryExecution exec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", q);
+//		ResultSet results = exec.execSelect();
+//		ArrayList<Category> categories = new ArrayList<Category>();
+//		while (results.hasNext()) {
+//			try {
+//				RDFNode node = results.next().get("narrower");
+//				String value = node.toString();
+//				value = value.substring(catURL.length());
+//				value = value.replace("_", " ");
+//				Category narrowerCat = new Category();
+//				narrowerCat.setLabel(value);
+//				URI narrowerURI;
+//				narrowerURI = URIGenerator.generateURI(narrowerCat);
+//				narrowerCat.setUri(narrowerURI);
+//				categories.add(narrowerCat);
+//			} catch (URISyntaxException e) {
+//				continue;
+//			}
+//
+//		}
+//
+//		return categories;
+//
+//	}
 }

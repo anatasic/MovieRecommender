@@ -3,54 +3,11 @@ package rs.fon.is.movies.similarity;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.eclipse.jetty.security.ConstraintSecurityHandler;
-
 import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
 
 public class TfIdfCalculator {
 
-	/*
-	 * public static double calculateTf(Collection<Category> totalCategories,
-	 * String categoryToCheck) { double count = 0; // to count the overall
-	 * occurrence of the term // termToCheck double numOfCategories = 0; for
-	 * (Category cat : totalCategories) { if
-	 * (cat.getLabel().equalsIgnoreCase(categoryToCheck)) { count++; } /* for
-	 * (Category broader : cat.getBroader() ){ if
-	 * (broader.getLabel().equalsIgnoreCase(categoryToCheck)){ count++; }
-	 * numOfCategories++; } for (Category narrower : cat.getNarrower() ){ if
-	 * (narrower.getLabel().equalsIgnoreCase(categoryToCheck)){ count++; }
-	 * numOfCategories++; }
-	 * 
-	 * numOfCategories++; } return count; }
-	 * 
-	 * public static double calculateIdf(List<Movie> movies, String
-	 * categoryToCheck) { double count = 0; for (Movie m : movies) { for
-	 * (Category cat : m.getCategories()) { if
-	 * (cat.getLabel().equalsIgnoreCase(categoryToCheck)) { count++; } } }
-	 * return Math.log(movies.size() / (1 + count));
-	 * 
-	 * }
-	 * 
-	 * public static List<List<Double>> tfIdfCalculator(List<Movie> movies) {
-	 * List<Category> allCategories = getAllCategories(movies);
-	 * List<List<Double>> vector = new ArrayList<>(); for (Movie movie : movies)
-	 * { List<Double> tfIdfMovie = calculateTfIdfForMovie(movies, allCategories,
-	 * movie); vector.add(tfIdfMovie); } return vector; }
-	 * 
-	 * private static List<Double> calculateTfIdfForMovie(List<Movie> movies,
-	 * List<Category> allCategories, Movie movie) { List<Double> tfidfCoeff =
-	 * new ArrayList<>(); for (Category cat : allCategories) {
-	 * System.out.println(cat.getLabel()); double tf =
-	 * calculateTf(movie.getCategories(), cat.getLabel()); double idf =
-	 * calculateIdf(movies, cat.getLabel()); double tfidf = tf * idf;
-	 * System.out.println("TF: "+tf); System.out.println("IDF" + idf);
-	 * tfidfCoeff.add(tfidf);
-	 * 
-	 * } return tfidfCoeff; }
-	 * 
-	 */
 	private static Collection<Category> getAllCategories(List<Movie> movies) {
 		int i = 0;
 		List<Category> allCategories = new ArrayList<Category>();
@@ -70,22 +27,38 @@ public class TfIdfCalculator {
 
 	private static double containsCategory(Category cat, Collection<Category> listOfCat) {
 		double i = 0;
+		boolean exist = false;
+
 		for (Category c : listOfCat) {
 			if (c.getLabel().equalsIgnoreCase(cat.getLabel())) {
+				exist = true;
 				i++;
-			} else if (c.getBroader().contains(cat)) {
+			} else {
 				for (Category cc : c.getBroader()) {
 					if (cc.getLabel().equals(cat.getLabel())) {
+						exist = true;
 						i = i + 0.6;
 					}
 				}
-			} else {
-				for (Category broader : cat.getBroader()) {
-					if (broader.getLabel().equals(c.getLabel())) {
-						i = i + 0.4;
+			}
+			if (!exist) {
+				for (Category cc : cat.getBroader()) {
+					if (cc.getLabel().equals(cat.getLabel())) {
+						exist = true;
+						i = i + 0.6;
 					}
 				}
 			}
+			if (!exist) {
+				for (Category broader1 : cat.getBroader()) {
+					for (Category broader2 : c.getBroader()) {
+						if (broader1.getLabel().equals(broader2.getLabel())) {
+							i = i + 0.4;
+						}
+					}
+				}
+			}
+			exist = false;
 		}
 		return i;
 	}
@@ -99,7 +72,6 @@ public class TfIdfCalculator {
 			if (frequency != 0.0) {
 				double a = calculateFrequencyForAllMovies(cat, movies);
 				tfidf.add(frequency * (Math.log(movies.size() / a)));
-
 			}
 
 			else {
@@ -111,28 +83,11 @@ public class TfIdfCalculator {
 
 	}
 
-
 	private static double calculateFrequencyForAllMovies(Category cat, List<Movie> movies) {
 		// TODO Auto-generated method stub
 		double count = 0;
 		for (Movie m : movies) {
-			for (Category c : m.getCategories()) {
-				if (c.getLabel().equalsIgnoreCase(cat.getLabel())) {
-					count++;
-				} else if (c.getBroader().contains(cat)) {
-					for (Category cc : c.getBroader()) {
-						if (cc.getLabel().equals(cat.getLabel())) {
-							count = count + 0.6;
-						}
-					}
-				} else {
-					for (Category broader : cat.getBroader()) {
-						if (broader.getLabel().equals(c.getLabel())) {
-							count = count + 0.4;
-						}
-					}
-				}
-			}
+			count += containsCategory(cat, m.getCategories());
 		}
 
 		return count;

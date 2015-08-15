@@ -16,8 +16,8 @@ public class Category extends Thing{
 	@RdfProperty(Constants.SKOS + "broader")
 	private List<Category> broader;
 	
-	@RdfProperty(Constants.SKOS + "narrower")
-	private List<Category> narrower;
+//	@RdfProperty(Constants.SKOS + "narrower")
+//	private List<Category> narrower;
 
 	public String getLabel() {
 		return label;
@@ -27,13 +27,13 @@ public class Category extends Thing{
 		this.label = label;
 	}
 
-	public List<Category> getNarrower() {
-		return narrower;
-	}
-
-	public void setNarrower(List<Category> narrower) {
-		this.narrower = narrower;
-	}
+//	public List<Category> getNarrower() {
+//		return narrower;
+//	}
+//
+//	public void setNarrower(List<Category> narrower) {
+//		this.narrower = narrower;
+//	}
 
 	public List<Category> getBroader() {
 		return broader;

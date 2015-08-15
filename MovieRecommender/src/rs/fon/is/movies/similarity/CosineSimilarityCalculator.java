@@ -1,6 +1,5 @@
 package rs.fon.is.movies.similarity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CosineSimilarityCalculator {

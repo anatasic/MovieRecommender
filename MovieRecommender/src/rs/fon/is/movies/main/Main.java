@@ -28,7 +28,7 @@ public class Main {
 
 	public static void main(String[] args) throws URISyntaxException {
 
-		// for (int i = 1; i < 80; i++) {
+		
 		Document doc = null;
 		try {
 			doc = Jsoup.parse(new URL("http://www.rottentomatoes.com/top/bestofrt/"), 17000);
@@ -39,10 +39,10 @@ public class Main {
 		}
 		collectLinks(doc);
 
-		// }
+		
 		List<Movie> movies = new ArrayList<>();
 		for (String href : moviesLinks.keySet()) {
-			if (movies.size() < 60) {
+			if (movies.size() < 150) {
 				try {
 					Movie movie = MovieParser.parse(moviesLinks.get(href));					
 					if (movie.getCategories().size() != 0) {
@@ -69,7 +69,7 @@ public class Main {
 			similarities.put(movie.getName(), values);
 		}
 		SimilarityWriter.writeInFile(movies, similarities);
-		System.out.println(movies.size());
+		
 		
 		DataModelManager.getInstance().closeDataModel();
 
