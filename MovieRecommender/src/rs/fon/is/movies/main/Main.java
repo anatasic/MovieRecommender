@@ -21,20 +21,21 @@ public class Main {
 
 	static HashMap<String, URI> moviesLinks = new HashMap<String, URI>();
 
-	public static void main(String[] args) throws URISyntaxException {		
+	public static void main(String[] args) throws URISyntaxException {
 		Document doc = null;
 		try {
-			doc = Jsoup.parse(new URL("http://www.rottentomatoes.com/top/bestofrt/"), 17000);			
+			doc = Jsoup.parse(new URL("http://www.rottentomatoes.com/top/bestofrt/"), 17000);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 
 		}
-		collectLinks(doc);		
+		// collects all links from this URL
+		collectLinks(doc);
 		List<Movie> movies = new ArrayList<>();
 		for (String href : moviesLinks.keySet()) {
 			if (movies.size() < 150) {
 				try {
-					Movie movie = MovieParser.parse(moviesLinks.get(href));					
+					Movie movie = MovieParser.parse(moviesLinks.get(href));
 					if (movie.getCategories().size() != 0) {
 						DataModelManager.getInstance().save(movie);
 						movies.add(movie);
@@ -47,20 +48,17 @@ public class Main {
 		}
 
 		HashMap<String, List<Double>> similarities = new HashMap<>();
+		// calculate tf-idf for each movie and based on this data determine cosine similarity 
 		for (Movie movie : movies) {
 			List<Double> tfIdfMovie1 = TfIdfCalculator.calculateTfIdfMovie(movie, movies);
-
 			List<Double> values = new ArrayList<>();
 			for (Movie m : movies) {
-
 				List<Double> tfIdfMovie = TfIdfCalculator.calculateTfIdfMovie(m, movies);
 				values.add(CosineSimilarityCalculator.cosineSimilarity(tfIdfMovie1, tfIdfMovie));
 			}
 			similarities.put(movie.getName(), values);
 		}
 		SimilarityWriter.writeInFile(movies, similarities);
-		
-		
 		DataModelManager.getInstance().closeDataModel();
 
 	}

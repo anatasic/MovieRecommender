@@ -5,7 +5,7 @@ import java.util.List;
 public class CosineSimilarityCalculator {
 
 	public static double cosineSimilarity(List<Double> docVector1, List<Double> docVector2) {
-		// algorhytim for calculation of cosine similarity  
+		// algorithm for calculation of cosine similarity  
 		double dotProduct = 0.0;
 		double magnitude1 = 0.0;
 		double magnitude2 = 0.0;

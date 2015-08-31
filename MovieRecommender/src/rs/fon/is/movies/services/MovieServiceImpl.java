@@ -17,6 +17,7 @@ public class MovieServiceImpl implements MovieService {
 	public Collection<Movie> getMovies(String offset, String limit, String minReleaseYear, String maxReleaseYear,
 			String actors, String minRatingValue, String maxRatingValue, String productionCompany, String genres,
 			String directedBy, String minReviewCount, String hasAwards, String categories) {
+		// SPARQL query to get all movies with or without filters
 		String prefix = "PREFIX schema: <" + Constants.SCHEMA + "> " + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
 				+ "SELECT ?movie ";
 		String where = " ?movie a schema:Movie . ";
@@ -98,12 +99,14 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	public Movie getMovie(String uri) {
+		// service to retrieve one movie
 		Movie movie = (Movie) DataModelManager.getInstance().load(uri);
 		return movie;
 	}
 
 	@Override
 	public Movie getSimilarMovies(String title, String directors) {
+		// service to retrieve five most similar movies
 		String[] movieDirectors = directors.split(",");
 		String prefix = "PREFIX schema: <" + Constants.SCHEMA + "> " + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
 				+ "SELECT ?movie ";

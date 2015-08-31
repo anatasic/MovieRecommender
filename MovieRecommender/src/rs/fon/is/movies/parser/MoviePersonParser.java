@@ -14,6 +14,7 @@ public class MoviePersonParser {
 	private static HashMap<String, Person> personsCache = new HashMap<String, Person>();
 
 	public static Person parse(Element personElements) {
+		// parse data about persons related to movies e.g. actors, directors etc
 		Person person = null;
 		try {
 

@@ -28,7 +28,7 @@ public class SimilarityReader {
 	public HashMap<String, Double> readSimilarities(String movieTitle) {
 		BufferedReader br = null;
 		// similarities are read one by one from .txt file
-		// similarities are written in matrix form
+		// similarities are stored in matrix form
 		// title1(url): coeff11 coeff12 coeff13 ...
 		// title2(url): coeff21 coeff22 coeff23 ...
 		try {

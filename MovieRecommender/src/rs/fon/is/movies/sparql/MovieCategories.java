@@ -20,7 +20,6 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-
 public class MovieCategories {
 
 	public static ArrayList<Category> getMovieCategories(String title, Collection<Person> directors) {
@@ -36,6 +35,7 @@ public class MovieCategories {
 	}
 
 	private static ArrayList<Category> findCategories(String title, Person director) {
+		// SPARQL query for getting all categories based on title and director of the movie
 		ParameterizedSparqlString query = new ParameterizedSparqlString(""
 				+ "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>"
 				+ "prefix category: <http://dbpedia.org/page/>"
@@ -59,15 +59,13 @@ public class MovieCategories {
 		QueryExecution exec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query.asQuery());
 		ResultSet results = exec.execSelect();
 		ArrayList<Category> categories = new ArrayList<Category>();
-		// System.out.println(query);
+		
 		while (results.hasNext()) {
 			String category = results.next().get("categoryName").toString().replace("@en", "");
-			List<Category> broader = getBroaderCategories(category);
-		//	List<Category> narrower = getNarrowerCategories(category);
+			List<Category> broader = getBroaderCategories(category);			
 			Category cat = new Category();
 			cat.setLabel(category);
 			cat.setBroader(broader);
-//			cat.setNarrower(narrower);
 			URI categoryUri;
 			try {
 				categoryUri = URIGenerator.generateURI(cat);
@@ -77,14 +75,12 @@ public class MovieCategories {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
-
 		return categories;
 	}
 
 	private static List<Category> getBroaderCategories(String category) {
-		// TODO Auto-generated method stub
+		// for each category retrieves list of broader categories
 		String catName = "<http://dbpedia.org/resource/Category:" + category.replace(" ", "_") + ">";
 		String query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
 				+ "prefix skos: <http://www.w3.org/2004/02/skos/core#>" + "select ?broader where { " + catName
@@ -95,7 +91,6 @@ public class MovieCategories {
 		ArrayList<Category> categories = new ArrayList<Category>();
 		while (results.hasNext()) {
 			String value = results.next().get("broader").toString().replace("@en", "");
-			// System.out.println(value);
 			Category broaderCat = new Category();
 			broaderCat.setLabel(value);
 			URI broaderURI;
@@ -114,37 +109,40 @@ public class MovieCategories {
 
 	}
 
-//	private static List<Category> getNarrowerCategories(String category) {
-//		String categoryUnderscore = category.replace(" ", "_");
-//		String categorySearch = "<http://dbpedia.org/resource/Category:" + categoryUnderscore + ">";
-//		String catURL = "http://dbpedia.org/resource/Category:";
-//		String query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-//				+ "prefix skos: <http://www.w3.org/2004/02/skos/core#>" + "select distinct ?narrower "
-//				+ "where { ?narrower skos:broader " + categorySearch + "}";
-//		// System.out.println(query);
-//		Query q = QueryFactory.create(query);
-//		QueryExecution exec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", q);
-//		ResultSet results = exec.execSelect();
-//		ArrayList<Category> categories = new ArrayList<Category>();
-//		while (results.hasNext()) {
-//			try {
-//				RDFNode node = results.next().get("narrower");
-//				String value = node.toString();
-//				value = value.substring(catURL.length());
-//				value = value.replace("_", " ");
-//				Category narrowerCat = new Category();
-//				narrowerCat.setLabel(value);
-//				URI narrowerURI;
-//				narrowerURI = URIGenerator.generateURI(narrowerCat);
-//				narrowerCat.setUri(narrowerURI);
-//				categories.add(narrowerCat);
-//			} catch (URISyntaxException e) {
-//				continue;
-//			}
-//
-//		}
-//
-//		return categories;
-//
-//	}
+	// private static List<Category> getNarrowerCategories(String category) {
+	// String categoryUnderscore = category.replace(" ", "_");
+	// String categorySearch = "<http://dbpedia.org/resource/Category:" +
+	// categoryUnderscore + ">";
+	// String catURL = "http://dbpedia.org/resource/Category:";
+	// String query = "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+	// + "prefix skos: <http://www.w3.org/2004/02/skos/core#>" + "select
+	// distinct ?narrower "
+	// + "where { ?narrower skos:broader " + categorySearch + "}";
+	// // System.out.println(query);
+	// Query q = QueryFactory.create(query);
+	// QueryExecution exec =
+	// QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", q);
+	// ResultSet results = exec.execSelect();
+	// ArrayList<Category> categories = new ArrayList<Category>();
+	// while (results.hasNext()) {
+	// try {
+	// RDFNode node = results.next().get("narrower");
+	// String value = node.toString();
+	// value = value.substring(catURL.length());
+	// value = value.replace("_", " ");
+	// Category narrowerCat = new Category();
+	// narrowerCat.setLabel(value);
+	// URI narrowerURI;
+	// narrowerURI = URIGenerator.generateURI(narrowerCat);
+	// narrowerCat.setUri(narrowerURI);
+	// categories.add(narrowerCat);
+	// } catch (URISyntaxException e) {
+	// continue;
+	// }
+	//
+	// }
+	//
+	// return categories;
+	//
+	// }
 }

@@ -25,6 +25,7 @@ import rs.fon.is.movies.util.URIGenerator;
 public class MovieParser {
 
 	public static Movie parse(URI movieUrl) {
+		// parse data about movies
 		Movie movie = null;
 		try {
 			Document doc = Jsoup.parse(movieUrl.toURL(), 7000);
