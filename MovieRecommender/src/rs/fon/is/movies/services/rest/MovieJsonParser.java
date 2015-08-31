@@ -2,17 +2,11 @@ package rs.fon.is.movies.services.rest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-
-import org.codehaus.jettison.json.JSONArray;
-
 import rs.fon.is.movies.domain.AggregateRating;
 import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.domain.Person;
-
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 
@@ -120,9 +114,12 @@ public class MovieJsonParser {
 		return categoryJson;
 	}
 	
-	public static JsonObject serializeSimilarMovies(String title, double coefficient){
+	public static JsonObject serializeSimilarMovies(String titleUrl, double coefficient){
 		JsonObject similarJson = new JsonObject();
+		String title = titleUrl.substring(0, titleUrl.indexOf('(')-1);
+		String url = titleUrl.substring(titleUrl.indexOf('(')+1, titleUrl.indexOf(')'));
 		similarJson.addProperty("title", title);
+		similarJson.addProperty("url", url);
 		similarJson.addProperty("similar", coefficient);	
 		return similarJson;
 	}

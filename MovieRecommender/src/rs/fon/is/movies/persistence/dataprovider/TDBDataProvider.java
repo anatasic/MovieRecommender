@@ -3,14 +3,16 @@ package rs.fon.is.movies.persistence.dataprovider;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
 
 public class TDBDataProvider implements DataProvider {
 
-	private static final String directory = "D:/tbd";
+	
 	private Dataset dataset;
 
 	public TDBDataProvider() {
-		dataset = TDBFactory.createDataset(directory);
+		Location location=new Location("docs/files/tdb");
+		dataset = TDBFactory.createDataset(location);
 	}
 
 	@Override

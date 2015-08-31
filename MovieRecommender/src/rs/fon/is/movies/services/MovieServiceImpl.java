@@ -1,20 +1,9 @@
 package rs.fon.is.movies.services;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 import rs.fon.is.movies.domain.Movie;
-import rs.fon.is.movies.domain.Person;
-import rs.fon.is.movies.file.SimilarityWriter;
-import rs.fon.is.movies.parser.MovieParser;
 import rs.fon.is.movies.persistence.DataModelManager;
-import rs.fon.is.movies.similarity.CosineSimilarityCalculator;
-import rs.fon.is.movies.similarity.TfIdfCalculator;
 import rs.fon.is.movies.util.Constants;
 
 public class MovieServiceImpl implements MovieService {
@@ -132,15 +121,9 @@ public class MovieServiceImpl implements MovieService {
 			String s = result.iterator().next();
 			Movie m = (Movie) DataModelManager.getInstance().load(s);
 			return m;
-		 
+
 		}
 		return null;
-	}
-
-	private String buildLink(String title) {
-		// TODO Auto-generated method stub
-		title = title.replace(' ', '_').toLowerCase();
-		return "http://www.rottentomatoes.com/m/" + title + "/";
 	}
 
 }

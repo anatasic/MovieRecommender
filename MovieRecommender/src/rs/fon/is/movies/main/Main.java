@@ -6,16 +6,11 @@ import java.util.List;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import org.apache.velocity.exception.MacroOverflowException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import rs.fon.is.movies.domain.Category;
 import rs.fon.is.movies.domain.Movie;
-import rs.fon.is.movies.domain.Person;
 import rs.fon.is.movies.file.SimilarityWriter;
 import rs.fon.is.movies.parser.MovieParser;
 import rs.fon.is.movies.persistence.DataModelManager;
@@ -26,20 +21,15 @@ public class Main {
 
 	static HashMap<String, URI> moviesLinks = new HashMap<String, URI>();
 
-	public static void main(String[] args) throws URISyntaxException {
-
-		
+	public static void main(String[] args) throws URISyntaxException {		
 		Document doc = null;
 		try {
-			doc = Jsoup.parse(new URL("http://www.rottentomatoes.com/top/bestofrt/"), 17000);
-			
+			doc = Jsoup.parse(new URL("http://www.rottentomatoes.com/top/bestofrt/"), 17000);			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 
 		}
-		collectLinks(doc);
-
-		
+		collectLinks(doc);		
 		List<Movie> movies = new ArrayList<>();
 		for (String href : moviesLinks.keySet()) {
 			if (movies.size() < 150) {
