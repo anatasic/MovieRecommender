@@ -123,5 +123,11 @@ public class MovieJsonParser {
 		similarJson.addProperty("similar", coefficient);	
 		return similarJson;
 	}
+	
+	public static JsonObject serializeMessage (int size){
+		JsonObject messageJson = new JsonObject();
+		messageJson.addProperty("message", "Reppository updated with "+size+" movies.");
+		return messageJson;
+	}
 
 }

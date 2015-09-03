@@ -52,6 +52,7 @@ public class TfIdfCalculator {
 					if (cc.getLabel().equals(cat.getLabel())) {
 						exist = true;
 						frequency = frequency + 0.6;
+						break;
 					}
 				}
 			}
@@ -63,9 +64,10 @@ public class TfIdfCalculator {
 				// if yes, frequency is increased by 0.6, exist flag is set to
 				// true
 				for (Category cc : cat.getBroader()) {
-					if (cc.getLabel().equals(cat.getLabel())) {
+					if (cc.getLabel().equals(c.getLabel())) {
 						exist = true;
 						frequency = frequency + 0.6;
+						break;
 					}
 				}
 			}
@@ -77,6 +79,7 @@ public class TfIdfCalculator {
 					for (Category broader2 : c.getBroader()) {
 						if (broader1.getLabel().equals(broader2.getLabel())) {
 							frequency = frequency + 0.4;
+							break;
 						}
 					}
 				}

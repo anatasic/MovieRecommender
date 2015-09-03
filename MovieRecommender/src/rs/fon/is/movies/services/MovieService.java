@@ -12,4 +12,5 @@ public interface MovieService {
 	public Movie getMovie(String uri);
 	
 	public Movie getSimilarMovies(String title, String director);
+
 }
