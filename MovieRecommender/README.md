@@ -5,11 +5,14 @@ movies
 
 The idea of this project is to create an application for etracting metadata about movies. The metadata is extracted from the website [Rotten Tomatoes](http://www.rottentomatoes.com), where one can find basic information about a movie, ratings, comments, recommendations etc.
 Metadata is inserted in site's webpages in a structured format using [Microdata standard](http://dev.w3.org/html5/md/), specifically using [Schema.org](http://schema.org/) vocabulary. After the metadata is extracted, it is transformed to RDF format and stored into RDF repository. Access to the extracted data is enabled through RESTful services.
+This application also contains algorithm for calculating similarities between movies in RDF repository. Each movie is described by certain number of categories and every category also contains list of broader categories. Categories for specfic movie are retrieved using SPARQL queries against DBPedia endpoint. Categories are described with dcterms:subject property.
+Similarities between movies are calculated based on categories using Cosine similarity algoritm. Cosine similarity is calculated based on TF-IDF weights. TF-IDF stands for term frequency-inverse document frequency.
 
 Application workflow consists of the following phases
 - A web crawler parses movie webpages from [Rotten Tomatoes](http://www.rottentomatoes.com) website and extracts movie metada
 - Extracted data is transformed into RDF triplets based on [Schema.org](http://schema.org/) vocabulary
 - Data is persisted into an RDF repository
+- Similarities between movies are calculated and stored in .csv file
 - Access to the data is enabled through RESTful services
 
 # 2. Domain model
@@ -19,7 +22,7 @@ Webpages of movies from the [Rotten Tomatoes](http://www.rottentomatoes.com) web
 ![Picture 1 - Domain model](docs/image/domain_model.jpg)
 Picture 1 - Domain model
 
-Class *Movie* contains basic information about a movie, such as: movie title. description, release date, url of the movie's image, genres and awards. Also, it has references to its actors and director (class Person), its current rating (class AggregateRating) and its production company (class Organization).
+Class *Movie* contains basic information about a movie, such as: movie title. description, release date, url of the movie's image, genres, and awards. Also, it has references to its actors and director (class Person), its current rating (class AggregateRating), its production company (class Organization) and its categories (class Category).
 
 Class *Person* contains basic information ofa person, such as person's name, image, url address and short description about that person.
 
@@ -27,9 +30,11 @@ Class *AggregateRating* contains information about a movie rating which is calcu
 
 Class *Organization* contains name of the production company.
 
+Class *Category* contains label and list of broader categories.
+
 # 3. The solution
 
-This application collects metadata about movies from the webpage [Rotten Tomatoes](http://www.rottentomatoes.com). The data is extracted by the crawler and is used to create domain objects of the application that are persisted into an RDF repository. The application allows access to that data via RESTful services.
+This application collects metadata about movies from the webpage [Rotten Tomatoes](http://www.rottentomatoes.com). The data is extracted by the crawler and is used to create domain objects of the application that are persisted into an RDF repository. Extracted data is also used to calculate similarities between movies. These values are stored in csv file. The application allows access to that data via RESTful services.
 
 The applications contains two REST services.
 
@@ -55,6 +60,21 @@ An example of a service call:
 
 An example of a service call:
 > GET/movies/3d548b4f-07e6-4e7f-8ebc-770b8801f5a6
+
+* **GET/movies/similar/** - returns five most similar movies from reposotory. Service's parameters are:
+
+* *title* - movie title
+* *directedBy* - movie director's name
+
+An example of a service call:
+> GET/movies/similar?title=The 39 Steps&directedBy=Alfred Hitchcock
+
+* **GET/movies/update/repository** - updates movie repository and file with similarities. Service's parameter is:
+
+* *url* - url from which data will be collected
+
+An example of a service call:
+> GET/movies/update/repository?url=http://www.rottentomatoes.com/top/bestofrt/top_100_action__adventure_movies/
 
 # 4. Technical realisation
 
