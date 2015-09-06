@@ -99,7 +99,10 @@ public class MovieRestService {
 	@Path("{update}/{repository}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String updateMovieRepository(@QueryParam("url") String url) throws URISyntaxException {
-
+		// this service updates movie repository
+		// reads all movies from the repository
+		// saves new movies
+		// finally it recalculates all similaties and writes them into csv file
 		Collection<Movie> movies = movieRepository.getMovies("", "500", "", "", "", "", "", "", "", "", "", "", "");
 		int size = movies.size();
 		Document doc = null;
@@ -126,9 +129,7 @@ public class MovieRestService {
 		HashMap<String, List<Double>> similarities = new HashMap<>();
 		List<List<Double>> values = new ArrayList<>();
 		List<Movie> moviesList = new ArrayList<>();
-		// int index = 0;
-		// calculate tf-idf for each movie and based on this data determine
-		// cosine similarity
+
 		moviesList.addAll(movies);
 		for (Movie movie : movies) {
 			List<Double> tfIdfMovie = TfIdfCalculator.calculateTfIdfMovie(movie, moviesList);
@@ -147,6 +148,7 @@ public class MovieRestService {
 		}
 		SimilarityWriter.writeInFile(moviesList, similarities);
 		DataModelManager.getInstance().closeDataModel();
+		// as a response this service retrieves message with the number of movies that were added in the repository
 		return MovieJsonParser.serializeMessage(movies.size() - size).toString();
 
 	}

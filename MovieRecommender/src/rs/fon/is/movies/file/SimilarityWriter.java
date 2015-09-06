@@ -16,7 +16,7 @@ public class SimilarityWriter {
 
 	public static void writeInFile(List<Movie> movies, HashMap<String, List<Double>> similiraties) {
 		
-		// similarities are written in file in the matrix form (explained in SimilarityReader class)
+		// similarities are written in csv file together with the movie title and url
 		File statText = new File(Constants.SIMILARITY);
 		FileOutputStream is;
 		try {
@@ -27,9 +27,9 @@ public class SimilarityWriter {
 
 			for (Movie m : movies) {
 				List<Double> values = similiraties.get(m.getName());
-				line += m.getName() + " ("+m.getUrl().toString()+") :  ";
+				line += m.getName() + ","+m.getUrl().toString()+",";
 				for (double sim : values) {
-					line += sim + "  ";
+					line += sim + ",";
 				}
 				w.write(line);
 				w.newLine();

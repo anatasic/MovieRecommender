@@ -3,16 +3,10 @@ package rs.fon.is.movies.main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import rs.fon.is.movies.crawler.MovieCrawler;
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.file.SimilarityWriter;
@@ -51,8 +45,8 @@ public class Main {
 
 		HashMap<String, List<Double>> similarities = new HashMap<>();
 		List<List<Double>> values = new ArrayList<>();
-		// calculate tf-idf for each movie and based on this data determine
-		// cosine similarity
+		// calculate tf-idf for each movie 
+		// cosine similarity is calculated based on tf-idfs
 		for (Movie movie : movies) {
 			List<Double> tfIdfMovie = TfIdfCalculator.calculateTfIdfMovie(movie, movies);
 			values.add(tfIdfMovie);

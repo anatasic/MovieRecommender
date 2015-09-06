@@ -116,10 +116,9 @@ public class MovieJsonParser {
 	
 	public static JsonObject serializeSimilarMovies(String titleUrl, double coefficient){
 		JsonObject similarJson = new JsonObject();
-		String title = titleUrl.substring(0, titleUrl.indexOf('(')-1);
-		String url = titleUrl.substring(titleUrl.indexOf('(')+1, titleUrl.indexOf(')'));
-		similarJson.addProperty("title", title);
-		similarJson.addProperty("url", url);
+		String [] titleUrlArray = titleUrl.split(",");
+		similarJson.addProperty("title", titleUrlArray[0]);
+		similarJson.addProperty("url", titleUrlArray[1]);
 		similarJson.addProperty("similar", coefficient);	
 		return similarJson;
 	}

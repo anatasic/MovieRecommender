@@ -13,6 +13,7 @@ public class MovieCrawler {
 	public static HashMap<String, URI> moviesLinks = new HashMap<String, URI>();
 
 	public static void collectLinks(Document doc) throws URISyntaxException {
+		// collects links that contain movie data
 		Elements links = doc.select("a");
 
 		for (Element link : links) {

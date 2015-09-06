@@ -13,6 +13,7 @@ import rs.fon.is.movies.util.Constants;
 public class SimilarityReader {
 
 	private static SimilarityReader INSTANCE;
+	private static final String COMMA_DELIMITER = ",";
 
 	private SimilarityReader() {
 
@@ -27,10 +28,10 @@ public class SimilarityReader {
 
 	public HashMap<String, Double> readSimilarities(String movieTitle) {
 		BufferedReader br = null;
-		// similarities are read one by one from .txt file
-		// similarities are stored in matrix form
-		// title1(url): coeff11 coeff12 coeff13 ...
-		// title2(url): coeff21 coeff22 coeff23 ...
+		// similarities are read one by one from .csv file
+		// similarities are stored in this form
+		// title1 url coeff11 coeff12 coeff13 ...
+		// title2 url coeff21 coeff22 coeff23 ...
 		try {
 			String sCurrentLine;
 			br = new BufferedReader(new FileReader(Constants.SIMILARITY));
@@ -40,16 +41,18 @@ public class SimilarityReader {
 			while ((sCurrentLine = br.readLine()) != null) {
 				i++;
 				if (!sCurrentLine.startsWith(movieTitle)) {
-					String title = sCurrentLine.substring(0, sCurrentLine.lastIndexOf(':'));
-					String[] similCoeff = (sCurrentLine.substring(sCurrentLine.lastIndexOf(':') + 2)).split("  ");
-					similarities.put(title, similCoeff);
+					String[] tokens = sCurrentLine.split(COMMA_DELIMITER);
+					String title = tokens[0];
+					String url = tokens[1];
+					tokens[0] = tokens[2];
+					similarities.put(title + "," + url, tokens);
 				} else {
 					// index of movie for which similarities are read
 					movieIndex = i;
 				}
 			}
 			br.close();
-			
+
 			HashMap<String, Double> similarMovies = new HashMap<>();
 			for (String title : similarities.keySet()) {
 				String[] coeff = similarities.get(title);
