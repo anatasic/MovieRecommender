@@ -87,9 +87,10 @@ An example of a service call:
 
 * *title* - movie title
 * *directedBy* - movie director's name
+* *number* - number of similar movies
 
 An example of a service call:
-> GET/movies/similar?title=The 39 Steps&directedBy=Alfred Hitchcock
+> GET/movies/similar?title=The 39 Steps&directedBy=Alfred Hitchcock&number=5
 
 * **GET/movies/update/repository** - updates movie repository and file with similarities. Service's parameter is:
 
