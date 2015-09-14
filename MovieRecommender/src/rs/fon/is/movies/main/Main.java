@@ -30,12 +30,12 @@ public class Main {
 		List<Movie> movies = new ArrayList<>();
 		for (String href : MovieCrawler.moviesLinks.keySet()) {
 			if (movies.size() < 150) {
-				try {
-					Movie movie = MovieParser.parse(MovieCrawler.moviesLinks.get(href));
-					if (movie.getCategories().size() != 0) {
-						DataModelManager.getInstance().save(movie);
-						movies.add(movie);
-					}
+				try {					
+						Movie movie = MovieParser.parse(MovieCrawler.moviesLinks.get(href));						
+						if (!MovieCrawler.alreadyExists(movie) && movie.getCategories().size() != 0) {
+							DataModelManager.getInstance().save(movie);
+							movies.add(movie);
+						}					
 				} catch (Exception e) {
 					e.printStackTrace();
 
@@ -45,13 +45,13 @@ public class Main {
 
 		HashMap<String, List<Double>> similarities = new HashMap<>();
 		List<List<Double>> values = new ArrayList<>();
-		// calculate tf-idf for each movie 
+		// calculate tf-idf for each movie
 		// cosine similarity is calculated based on tf-idfs
 		for (Movie movie : movies) {
 			List<Double> tfIdfMovie = TfIdfCalculator.calculateTfIdfMovie(movie, movies);
 			values.add(tfIdfMovie);
 		}
-		
+
 		int index = 0;
 		List<Double> coefficients = new ArrayList<Double>();
 		for (List<Double> coeffs1 : values) {

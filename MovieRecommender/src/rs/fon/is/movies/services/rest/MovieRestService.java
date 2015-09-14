@@ -77,13 +77,13 @@ public class MovieRestService {
 	@GET
 	@Path("{similar}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getSimilarMovies(@QueryParam("title") String title, @QueryParam("directedBy") String directedBy) {
+	public String getSimilarMovies(@QueryParam("title") String title, @QueryParam("directedBy") String directedBy, @QueryParam("number") int noOfMovies) {
 
-		Movie movie = movieRepository.getSimilarMovies(title, directedBy);
+		Movie movie = movieRepository.getMovie(title, directedBy);
 		if (movie != null) {
 			JsonArray similarArray = new JsonArray();
 			HashMap<String, Double> similarMovies = SimilarityReader.getInstance().readSimilarities(movie.getName());
-			List<String> titles = SimilarityReader.getInstance().readTitles(similarMovies);
+			List<String> titles = SimilarityReader.getInstance().readTitles(similarMovies, noOfMovies);
 			for (String t : titles) {
 				JsonObject similarJson = MovieJsonParser.serializeSimilarMovies(t, similarMovies.get(t));
 				similarArray.add(similarJson);
@@ -102,7 +102,7 @@ public class MovieRestService {
 		// this service updates movie repository
 		// reads all movies from the repository
 		// saves new movies
-		// finally it recalculates all similaties and writes them into csv file
+		// finally it recalculates all similarities and writes them into csv file
 		Collection<Movie> movies = movieRepository.getMovies("", "500", "", "", "", "", "", "", "", "", "", "", "");
 		int size = movies.size();
 		Document doc = null;

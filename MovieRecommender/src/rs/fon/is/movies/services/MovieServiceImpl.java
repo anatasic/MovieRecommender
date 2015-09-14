@@ -1,5 +1,7 @@
 package rs.fon.is.movies.services;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import rs.fon.is.movies.domain.Movie;
@@ -105,8 +107,8 @@ public class MovieServiceImpl implements MovieService {
 	}
 
 	@Override
-	public Movie getSimilarMovies(String title, String directors) {
-		// service to retrieve five most similar movies
+	public Movie getMovie(String title, String directors) {
+		// service to retrieve movie based on title and director
 		String[] movieDirectors = directors.split(",");
 		String prefix = "PREFIX schema: <" + Constants.SCHEMA + "> " + "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
 				+ "SELECT ?movie ";
@@ -129,6 +131,6 @@ public class MovieServiceImpl implements MovieService {
 		return null;
 	}
 
-	
+
 
 }

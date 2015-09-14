@@ -1,5 +1,7 @@
 package rs.fon.is.movies.services;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 
 import rs.fon.is.movies.domain.Movie;
@@ -11,6 +13,10 @@ public interface MovieService {
 	
 	public Movie getMovie(String uri);
 	
-	public Movie getSimilarMovies(String title, String director);
+	public Movie getMovie(String title, String director);
+	
+
+
+
 
 }

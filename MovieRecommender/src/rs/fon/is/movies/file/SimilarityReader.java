@@ -67,9 +67,10 @@ public class SimilarityReader {
 
 	}
 
-	public List<String> readTitles(HashMap<String, Double> similarMovies) {
+	public List<String> readTitles(HashMap<String, Double> similarMovies, int noOfMovies) {
 
-		// retrieves the title of five most similar movies
+		// retrieves the titles for most similar movies; number of similar movies is specified by 
+		// query parameter provided in service call
 
 		List<Double> values = new ArrayList<>(similarMovies.values());
 		List<String> titles = new ArrayList<>();
@@ -77,12 +78,12 @@ public class SimilarityReader {
 		// values are sort in ascending order, that is why loop starts from the
 		// last one
 		Collections.sort(values);
-		int count = 5;
+		//int count = 5;
 		for (int i = values.size() - 1; i > 0; i--) {
 			for (String title : similarMovies.keySet()) {
-				if (similarMovies.get(title) == values.get(i) && count > 0) {
+				if (similarMovies.get(title) == values.get(i) && noOfMovies > 0) {
 					titles.add(title);
-					count--;
+					noOfMovies--;
 				}
 			}
 		}
