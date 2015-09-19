@@ -77,7 +77,7 @@ public class MovieRestService {
 	@GET
 	@Path("{similar}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getSimilarMovies(@QueryParam("title") String title, @QueryParam("directedBy") String directedBy, @QueryParam("number") int noOfMovies) {
+	public String getSimilarMovies(@QueryParam("title") String title,@DefaultValue("") @QueryParam("directedBy") String directedBy, @QueryParam("number") int noOfMovies) {
 
 		Movie movie = movieRepository.getMovie(title, directedBy);
 		if (movie != null) {

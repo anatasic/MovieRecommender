@@ -1,21 +1,14 @@
 package rs.fon.is.movies.crawler;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
 import rs.fon.is.movies.domain.Movie;
 import rs.fon.is.movies.domain.Person;
 import rs.fon.is.movies.services.MovieServiceImpl;
-import rs.fon.is.movies.util.Constants;
 
 public class MovieCrawler {
 

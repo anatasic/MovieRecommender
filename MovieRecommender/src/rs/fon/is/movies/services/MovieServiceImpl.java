@@ -114,9 +114,11 @@ public class MovieServiceImpl implements MovieService {
 				+ "SELECT ?movie ";
 		String where = " ?movie a schema:Movie . ";
 		where += "?movie schema:name ?name. " + "FILTER regex(?name, \"" + title + "\", \"i\") ";
-		for (int i = 0; i < movieDirectors.length; i++) {
-			where += "?movie schema:directors ?directors" + i + ". ?directors" + i + " schema:name ?name" + i
-					+ " FILTER regex(?name" + i + ", \"" + movieDirectors[i] + "\") ";
+		if (!directors.isEmpty()) {
+			for (int i = 0; i < movieDirectors.length; i++) {
+				where += "?movie schema:directors ?directors" + i + ". ?directors" + i + " schema:name ?name" + i
+						+ " FILTER regex(?name" + i + ", \"" + movieDirectors[i] + "\") ";
+			}
 		}
 		String query = prefix + " WHERE {" + where + "} ";
 		Collection<String> result = queryExecutor.executeOneVariableSelectSparqlQuery(query, "movie",
@@ -130,7 +132,5 @@ public class MovieServiceImpl implements MovieService {
 		}
 		return null;
 	}
-
-
 
 }
