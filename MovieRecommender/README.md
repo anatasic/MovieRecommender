@@ -3,20 +3,21 @@ movies
 
 # 1. About the project
 
-The idea of this project is to create an application for etracting metadata about movies. The metadata is extracted from the website [Rotten Tomatoes](http://www.rottentomatoes.com), where one can find basic information about a movie, ratings, comments, recommendations etc.
+One of the objectives of this project is to create an application for extracting metadata about movies. The metadata is extracted from the website [Rotten Tomatoes](http://www.rottentomatoes.com), where one can find basic information about a movie, ratings, comments, recommendations etc.
 Metadata is inserted in site's webpages in a structured format using [Microdata standard](http://dev.w3.org/html5/md/), specifically using [Schema.org](http://schema.org/) vocabulary. After the metadata is extracted, it is transformed to RDF format and stored into RDF repository. Access to the extracted data is enabled through RESTful services.
 
-This application also contains algorithm for calculating similarities between movies in RDF repository. Each movie is described by certain number of categories and every category also contains list of broader categories. Categories for specfic movie are retrieved using SPARQL queries against DBPedia endpoint. Categories are described with dcterms:subject property.
-Similarities between movies are calculated based on mentioned set of categories using Cosine similarity algoritm. In order to calculate Cosine similarity for two movies, first oefficients called TF-IDF (term frequency inverse document frequency) have to be defined for every category that describes a movie. TF-IDF measures the number of times word (term) appears in the document. In this case is a bit different, since one category that describes the movie can appear in list of categories for that movie only once. If the TF-IDFs are calculated for one movie for certain category (searched category in the text), following scenarios are included:
-- searched category exists in the list of categories that describes the movie; in that case frequency is 1
-- searched category does not exist in the list of categories that describes the movie, but exists in list of broader categories that are defined for every category in the list; in that case for every appearance in list of broader categories, frequency of searched category is increased by 0.6
-- searched category does not exist in the list of categories and also does not exist in list of broader categories for every category defined in the list; in that case, broader categories of the searched category are compared with the list of categories that describes that movie; if there is match between them, frequency is equeal to 0.6; if there is no match broader categories of the searched category are compared with the list for broader categories for every category that exists in the list of categories that are describing the movie; for every match, frequency is increased by 0.4
+The other objective of the project is to develop services that could be used for building a content-based recommender system. In particular, services for calculating similarities between movies stored in RDF repository. Each movie is described by certain number of topical categories and every category is associated with a list of broader (more general) categories. Categories for specific movie are retrieved using SPARQL queries against [DBPedia endpoint](http://dbpedia.org/sparql). Movies are associated with categories through the [dcterms:subject property](http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=terms#subject). 
 
-After this, inverse document frequency should be calculated. This value is used in order to weigh down the effects of too frequently occuring category. Basically, that means that category 'English based movies' should be less important than category 'Wikipedia categories named after animated films'. This value is calculated using formula:
+Similarities between movies are calculated based on mentioned set of categories using the Cosine similarity metric. In order to calculate [Cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity) for two movies, first cefficients called [TF-IDF (term frequency inverse document frequency)](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) have to be calculated for every category that describes a movie.This application case is a bit different, since one category that describes the movie can appear in list of categories for that movie only once. When TF-IDF is calculated for one movie for certain category (searched category in the text), following scenarios are included:
+- searched category exists in the list of categories that describes the movie; in that case frequency is 1
+- searched category does not exist in the list of categories that describes the movie, but exists in the list of broader categories that are defined for every category in the list; in that case for every appearance in list of broader categories, frequency of searched category is increased by 0.6
+- searched category does not exist in the list of categories and also does not exist in the list of broader categories for any category defined in the list; in that case, broader categories of the searched category are compared with the list of categories that describes that movie; if there is match between them, frequency is set to 0.6; if there is no match, broader categories of the searched category are compared with the list of broader categories for every category that exists in the list of categories that are describing the movie; for every match, frequency is increased by 0.4
+
+After this, inverse document frequency should be calculated. This value is used in order to weight down the effects of too frequently occurring category. Basically, that means that frequently ocurring category 'English based movies' should be less important than uncommon categories such as 'Wikipedia categories named after animated films'. This value is calculated using the formula:
 
 IDF(category) = 1 + loge(Total Number Of Movies / Number Of Movies described with this category)
 
-After that the matrix is created. This matrix contains one row per every movie for which tf-idf coefficients are calculated and one column for every category. Values in matrix are product of TF and IDF for one category for certain movie.
+After that the matrix is created. This matrix contains one row per every movie for which tf-idf coefficients are calculated and one column for every category. Values in the matrix are product of TF and IDF for each category for certain movie.
 
 Cosine similarity for two movies is calculated using the following formula:
 
@@ -30,7 +31,7 @@ D1 and D2 are vectors that contain products of tf and idfs for all categories in
 
 Once similarities between one movie and all other movies in the dataset are calculated they are written in the CSV file similarities.csv. This operation repeats for all the movies in the dataset.
 
-Application workflow consists of the following phases
+The main application workflow consists of the following phases
 - A web crawler parses movie webpages from [Rotten Tomatoes](http://www.rottentomatoes.com) website and extracts movie metada
 - Extracted data is transformed into RDF triplets based on [Schema.org](http://schema.org/) vocabulary
 - Data is persisted into an RDF repository
