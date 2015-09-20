@@ -77,7 +77,8 @@ public class MovieRestService {
 	@GET
 	@Path("{similar}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getSimilarMovies(@QueryParam("title") String title,@DefaultValue("") @QueryParam("directedBy") String directedBy, @QueryParam("number") int noOfMovies) {
+	public String getSimilarMovies(@QueryParam("title") String title,
+			@DefaultValue("") @QueryParam("directedBy") String directedBy, @QueryParam("number") int noOfMovies) {
 
 		Movie movie = movieRepository.getMovie(title, directedBy);
 		if (movie != null) {
@@ -102,9 +103,16 @@ public class MovieRestService {
 		// this service updates movie repository
 		// reads all movies from the repository
 		// saves new movies
-		// finally it recalculates all similarities and writes them into csv file
+		// finally it recalculates all similarities and writes them into csv
+		// file
 		Collection<Movie> movies = movieRepository.getMovies("", "500", "", "", "", "", "", "", "", "", "", "", "");
-		int size = movies.size();
+		int size = 0;
+		if (movies != null){
+			size = movies.size();
+		}else{
+			movies = new ArrayList<>();
+		}
+		
 		Document doc = null;
 		try {
 			doc = Jsoup.parse(new URL(url), 17000);
@@ -116,10 +124,10 @@ public class MovieRestService {
 		for (String href : MovieCrawler.moviesLinks.keySet()) {
 			try {
 				Movie movie = MovieParser.parse(MovieCrawler.moviesLinks.get(href));
-				if (movie.getCategories().size() != 0) {
+				if (!MovieCrawler.alreadyExists(movie) && movie.getCategories().size() != 0) {
 					DataModelManager.getInstance().save(movie);
 					movies.add(movie);
-				}
+				} 
 			} catch (Exception e) {
 				e.printStackTrace();
 
@@ -148,7 +156,8 @@ public class MovieRestService {
 		}
 		SimilarityWriter.writeInFile(moviesList, similarities);
 		DataModelManager.getInstance().closeDataModel();
-		// as a response this service retrieves message with the number of movies that were added in the repository
+		// as a response this service retrieves message with the number of
+		// movies that were added in the repository
 		return MovieJsonParser.serializeMessage(movies.size() - size).toString();
 
 	}

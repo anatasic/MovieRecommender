@@ -102,7 +102,6 @@ public class Main {
 
 				default:
 					System.out.println("Enter valid command.");
-
 					break;
 				}
 				input = br.readLine();
@@ -125,9 +124,11 @@ public class Main {
 		String paramString = URLEncodedUtils.format(params, "utf-8");
 		url += paramString;
 		HttpGet get = new HttpGet(url);
+		System.out.println("Executing...");
 		HttpResponse response = client.execute(target, get);
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		String line = "";
+		//System.out.println("here I am");
 		if ((line = rd.readLine()) != null) {
 
 			System.out.println(line);
@@ -151,11 +152,16 @@ public class Main {
 		url += paramString;
 		HttpGet get = new HttpGet(url);
 		HttpResponse response = client.execute(target, get);
-		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-		String line = "";
-		while ((line = rd.readLine()) != null) {
-			System.out.println(line);
+		if (response.getEntity().getContent() != null){
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			String line = "";
+			while ((line = rd.readLine()) != null) {
+				System.out.println(line);
+			}
+		}else{
+			System.out.println("No data for this movie.");
 		}
+		
 
 	}
 }

@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import rs.fon.is.movies.util.Constants;
 
 public class SimilarityReader {
@@ -44,8 +46,9 @@ public class SimilarityReader {
 					String[] tokens = sCurrentLine.split(COMMA_DELIMITER);
 					String title = tokens[0];
 					String url = tokens[1];
-					tokens[0] = tokens[2];
-					similarities.put(title + "," + url, tokens);
+					String [] tokensWithoutTitle = (String[]) ArrayUtils.removeElement(tokens,title);
+					String [] tokensWithoutUrl = (String[]) ArrayUtils.removeElement(tokensWithoutTitle,url);
+					similarities.put(title + "," + url, tokensWithoutUrl);
 				} else {
 					// index of movie for which similarities are read
 					movieIndex = i;
